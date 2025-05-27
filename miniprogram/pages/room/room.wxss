@@ -1,0 +1,184 @@
+.container {
+  padding: 20rpx;
+  min-height: 100vh;
+  background-color: #f5f5f5;
+}
+
+.room-info {
+  background-color: #fff;
+  padding: 20rpx;
+  border-radius: 10rpx;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20rpx;
+}
+
+.room-id {
+  font-size: 32rpx;
+  font-weight: bold;
+}
+
+.share-btn {
+  background-color: #07c160;
+  color: #fff;
+  padding: 10rpx 20rpx;
+  border-radius: 30rpx;
+  font-size: 28rpx;
+}
+
+.players-list {
+  background-color: #fff;
+  padding: 20rpx;
+  border-radius: 10rpx;
+  margin-bottom: 20rpx;
+}
+
+.players-title {
+  font-size: 32rpx;
+  font-weight: bold;
+  margin-bottom: 20rpx;
+}
+
+.players-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20rpx;
+}
+
+.player-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20rpx;
+  background-color: #f8f8f8;
+  border-radius: 10rpx;
+}
+
+.player-avatar {
+  width: 100rpx;
+  height: 100rpx;
+  border-radius: 50rpx;
+  margin-bottom: 10rpx;
+}
+
+.player-name {
+  font-size: 28rpx;
+  margin-bottom: 10rpx;
+}
+
+.player-balance {
+  font-size: 28rpx;
+  font-weight: bold;
+}
+
+.positive {
+  color: #07c160;
+}
+
+.negative {
+  color: #ff4d4f;
+}
+
+.transactions {
+  background-color: #fff;
+  padding: 20rpx;
+  border-radius: 10rpx;
+  margin-bottom: 20rpx;
+}
+
+.transactions-title {
+  font-size: 32rpx;
+  font-weight: bold;
+  margin-bottom: 20rpx;
+}
+
+.transaction-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20rpx 0;
+  border-bottom: 1rpx solid #eee;
+}
+
+.transaction-info {
+  display: flex;
+  align-items: center;
+  gap: 10rpx;
+}
+
+.arrow {
+  color: #999;
+}
+
+.amount {
+  font-weight: bold;
+  color: #333;
+}
+
+.settle-btn {
+  background-color: #ff4d4f;
+  color: #fff;
+  text-align: center;
+  padding: 20rpx;
+  border-radius: 10rpx;
+  font-size: 32rpx;
+  font-weight: bold;
+}
+
+/* 转账弹窗样式 */
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-content {
+  background-color: #fff;
+  padding: 30rpx;
+  border-radius: 10rpx;
+  width: 80%;
+}
+
+.modal-title {
+  font-size: 32rpx;
+  font-weight: bold;
+  margin-bottom: 20rpx;
+  text-align: center;
+}
+
+.amount-input {
+  border: 1rpx solid #ddd;
+  padding: 20rpx;
+  border-radius: 10rpx;
+  margin-bottom: 20rpx;
+}
+
+.modal-buttons {
+  display: flex;
+  gap: 20rpx;
+}
+
+.cancel-btn, .confirm-btn {
+  flex: 1;
+  text-align: center;
+  padding: 20rpx;
+  border-radius: 10rpx;
+  font-size: 28rpx;
+}
+
+.cancel-btn {
+  background-color: #f5f5f5;
+  color: #666;
+}
+
+.confirm-btn {
+  background-color: #07c160;
+  color: #fff;
+} 

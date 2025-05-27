@@ -1,0 +1,55 @@
+<view class="container">
+  <!-- 房间信息 -->
+  <view class="room-info">
+    <text class="room-id">房间号：{{roomId}}</text>
+    <view class="share-btn" bindtap="shareRoom">
+      <text>分享房间</text>
+    </view>
+  </view>
+
+  <!-- 玩家列表 -->
+  <view class="players-list">
+    <view class="players-title">玩家列表</view>
+    <view class="players-grid">
+      <view class="player-item" wx:for="{{players}}" wx:key="openId" bindtap="showTransferModal" data-player="{{item}}">
+        <image class="player-avatar" src="{{item.avatarUrl}}" mode="aspectFill"></image>
+        <text class="player-name">{{item.nickName}}</text>
+        <text class="player-balance {{item.balance >= 0 ? 'positive' : 'negative'}}">
+          {{item.balance >= 0 ? '+' : ''}}{{item.balance}}
+        </text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 转账记录 -->
+  <view class="transactions">
+    <view class="transactions-title">转账记录</view>
+    <view class="transaction-list">
+      <view class="transaction-item" wx:for="{{transactions}}" wx:key="id">
+        <view class="transaction-info">
+          <text class="from">{{item.fromName}}</text>
+          <text class="arrow">→</text>
+          <text class="to">{{item.toName}}</text>
+        </view>
+        <text class="amount">{{item.amount}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 结算按钮（仅房主可见） -->
+  <view class="settle-btn" wx:if="{{isCreator}}" bindtap="settleRoom">
+    <text>结算房间</text>
+  </view>
+</view>
+
+<!-- 转账弹窗 -->
+<view class="modal" wx:if="{{showTransferModal}}">
+  <view class="modal-content">
+    <view class="modal-title">转账给 {{selectedPlayer.nickName}}</view>
+    <input type="digit" class="amount-input" placeholder="请输入金额" bindinput="onAmountInput" value="{{transferAmount}}"/>
+    <view class="modal-buttons">
+      <button class="cancel-btn" bindtap="cancelTransfer">取消</button>
+      <button class="confirm-btn" bindtap="confirmTransfer">确定</button>
+    </view>
+  </view>
+</view> 

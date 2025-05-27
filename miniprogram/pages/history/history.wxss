@@ -1,0 +1,108 @@
+.container {
+  padding: 20rpx;
+  min-height: 100vh;
+  background-color: #f5f5f5;
+}
+
+.history-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20rpx;
+}
+
+.history-item {
+  background-color: #fff;
+  border-radius: 10rpx;
+  padding: 20rpx;
+}
+
+.history-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20rpx;
+  padding-bottom: 20rpx;
+  border-bottom: 1rpx solid #eee;
+}
+
+.room-id {
+  font-size: 32rpx;
+  font-weight: bold;
+}
+
+.date {
+  font-size: 24rpx;
+  color: #999;
+}
+
+.players-summary {
+  margin-bottom: 20rpx;
+}
+
+.player-item {
+  display: flex;
+  align-items: center;
+  padding: 10rpx 0;
+}
+
+.player-avatar {
+  width: 60rpx;
+  height: 60rpx;
+  border-radius: 30rpx;
+  margin-right: 20rpx;
+}
+
+.player-name {
+  flex: 1;
+  font-size: 28rpx;
+}
+
+.player-balance {
+  font-size: 28rpx;
+  font-weight: bold;
+}
+
+.positive {
+  color: #07c160;
+}
+
+.negative {
+  color: #ff4d4f;
+}
+
+.transactions-summary {
+  border-top: 1rpx solid #eee;
+  padding-top: 20rpx;
+}
+
+.transaction-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10rpx 0;
+}
+
+.transaction-info {
+  display: flex;
+  align-items: center;
+  gap: 10rpx;
+  font-size: 28rpx;
+}
+
+.arrow {
+  color: #999;
+}
+
+.amount {
+  font-weight: bold;
+  color: #333;
+}
+
+.empty-state {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 400rpx;
+  color: #999;
+  font-size: 28rpx;
+} 

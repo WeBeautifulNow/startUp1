@@ -1,0 +1,35 @@
+<view class="container">
+  <view class="history-list">
+    <view class="history-item" wx:for="{{historyList}}" wx:key="timestamp">
+      <view class="history-header">
+        <text class="room-id">房间号：{{item.roomId}}</text>
+        <text class="date">{{formatDate(item.timestamp)}}</text>
+      </view>
+      
+      <view class="players-summary">
+        <view class="player-item" wx:for="{{item.players}}" wx:for-item="player" wx:key="openId">
+          <image class="player-avatar" src="{{player.avatarUrl}}" mode="aspectFill"></image>
+          <text class="player-name">{{player.nickName}}</text>
+          <text class="player-balance {{player.balance >= 0 ? 'positive' : 'negative'}}">
+            {{player.balance >= 0 ? '+' : ''}}{{player.balance}}
+          </text>
+        </view>
+      </view>
+
+      <view class="transactions-summary">
+        <view class="transaction-item" wx:for="{{item.transactions}}" wx:for-item="transaction" wx:key="id">
+          <view class="transaction-info">
+            <text class="from">{{transaction.fromName}}</text>
+            <text class="arrow">→</text>
+            <text class="to">{{transaction.toName}}</text>
+          </view>
+          <text class="amount">{{transaction.amount}}</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view class="empty-state" wx:if="{{historyList.length === 0}}">
+    <text>暂无历史记录</text>
+  </view>
+</view> 

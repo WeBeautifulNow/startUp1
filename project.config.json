@@ -4,8 +4,7 @@
   "compileType": "miniprogram",
   "setting": {
     "useCompilerPlugins": [
-      "typescript",
-      "less"
+      "typescript"
     ],
     "babelSetting": {
       "ignore": [],
@@ -20,7 +19,7 @@
     "packNpmRelationList": [],
     "ignoreUploadUnusedFiles": true,
     "compileHotReLoad": false,
-    "skylineRenderEnable": true
+    "useTypeScript": true
   },
   "simulatorType": "wechat",
   "simulatorPluginLibVersion": {},
@@ -30,7 +29,7 @@
     "tabIndent": "insertSpaces",
     "tabSize": 2
   },
-  "libVersion": "2.32.3",
+  "libVersion": "3.0.2",
   "packOptions": {
     "ignore": [],
     "include": []
