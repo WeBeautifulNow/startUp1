@@ -1,44 +1,88 @@
 <view class="container">
-  <!-- 房间信息 -->
-  <view class="room-info">
-    <text class="room-id">房间号：{{roomId}}</text>
-    <view class="share-btn" bindtap="shareRoom">
-      <text>分享房间</text>
-    </view>
-  </view>
-
   <!-- 玩家列表 -->
-  <view class="players-list">
-    <view class="players-title">玩家列表</view>
-    <view class="players-grid">
-      <view class="player-item" wx:for="{{players}}" wx:key="openId" bindtap="showTransferModal" data-player="{{item}}">
-        <image class="player-avatar" src="{{item.avatarUrl}}" mode="aspectFill"></image>
-        <text class="player-name">{{item.nickName}}</text>
-        <text class="player-balance {{item.balance >= 0 ? 'positive' : 'negative'}}">
-          {{item.balance >= 0 ? '+' : ''}}{{item.balance}}
-        </text>
-      </view>
+  <view class="players-grid">
+    <view class="player-item" wx:for="{{players}}" wx:key="openId" bindtap="showTransferModal" data-player="{{item}}">
+      <image class="player-avatar" src="{{item.avatarUrl}}" mode="aspectFill"></image>
+      <text class="player-name">{{item.nickName}}</text>
+      <text class="player-balance {{item.balance < 0 ? 'negative' : 'positive'}}">
+        {{item.balance >= 0 ? '+' : ''}}{{item.balance}}
+      </text>
     </view>
   </view>
 
-  <!-- 转账记录 -->
-  <view class="transactions">
-    <view class="transactions-title">转账记录</view>
-    <view class="transaction-list">
-      <view class="transaction-item" wx:for="{{transactions}}" wx:key="id">
-        <view class="transaction-info">
-          <text class="from">{{item.fromName}}</text>
-          <text class="arrow">→</text>
-          <text class="to">{{item.toName}}</text>
+  <!-- 消息记录 -->
+  <view class="messages">
+    <view class="room-id-float">
+      <view class="room-id-bar">
+        <text class="room-id-welcome">欢迎进入房间</text>
+        <view class="room-id-value-wrap">
+          <text class="room-id-value">{{roomId}}</text>
+          <text class="room-id-copy-icon" bindtap="copyRoomId">📋</text>
         </view>
-        <text class="amount">{{item.amount}}</text>
+      </view>
+    </view>
+    <view class="message-list">
+      <view class="message-item {{item.type === 'system' ? 'system' : ''}}" wx:for="{{messages}}" wx:key="id">
+        <!-- 系统消息 -->
+        <block wx:if="{{item.type === 'system'}}">
+          <view class="system-message">
+            <view class="system-message-row">
+              <text class="system-time">🔔 {{item.fullTimeStr}}</text>
+              <text class="system-content">{{item.content}}</text>
+            </view>
+          </view>
+        </block>
+        <!-- 转账消息 -->
+        <block wx:elif="{{item.type === 'transfer'}}">
+          <view class="transfer-message {{item.isSelf ? 'self' : 'other'}}">
+            <block wx:if="{{!item.isSelf}}">
+              <image class="message-avatar" src="{{item.fromAvatar}}" mode="aspectFill"></image>
+              <view class="message-main">
+                <view class="message-time">{{item.fullTimeStr}}</view>
+                <view class="message-content">
+                  <text>向</text>
+                  <text class="nickname">{{item.toName}}</text>
+                  <text>转账</text>
+                  <text class="amount">{{item.amount}}元</text>
+                </view>
+              </view>
+            </block>
+            <block wx:if="{{item.isSelf}}">
+              <view class="message-main">
+                <view class="message-time">{{item.fullTimeStr}}</view>
+                <view class="message-content">
+                  <text>向</text>
+                  <text class="nickname">{{item.toName}}</text>
+                  <text>转账</text>
+                  <text class="amount">{{item.amount}}元</text>
+                </view>
+              </view>
+              <image class="message-avatar" src="{{item.fromAvatar}}" mode="aspectFill"></image>
+            </block>
+          </view>
+        </block>
       </view>
     </view>
   </view>
 
-  <!-- 结算按钮（仅房主可见） -->
-  <view class="settle-btn" wx:if="{{isCreator}}" bindtap="settleRoom">
-    <text>结算房间</text>
+  <!-- 底部操作按钮 -->
+  <view class="bottom-buttons">
+    <button class="action-btn" bindtap="settleRoom">
+      <text>结算</text>
+    </button>
+    <button class="action-btn" bindtap="showBatchTransferModal">
+      <text>支出</text>
+    </button>
+    <button class="action-btn" bindtap="shareRoom">
+      <text>邀请</text>
+    </button>
+    <button class="action-btn" bindtap="showHelp">
+      <text>说明</text>
+    </button>
+  </view>
+
+  <view class="home-btn" bindtap="goToHome">
+    <icon type="home" size="40" color="#333" />
   </view>
 </view>
 
@@ -51,5 +95,53 @@
       <button class="cancel-btn" bindtap="cancelTransfer">取消</button>
       <button class="confirm-btn" bindtap="confirmTransfer">确定</button>
     </view>
+  </view>
+</view>
+
+<!-- 批量支出弹窗 -->
+<view class="modal" wx:if="{{showBatchTransferModal}}">
+  <view class="modal-content">
+    <view class="modal-title">多人支出</view>
+    <view class="batch-transfer-list">
+      <view class="batch-transfer-item" wx:for="{{batchTransferList}}" wx:key="openId">
+        <image class="batch-avatar" src="{{item.avatarUrl}}" mode="aspectFill"></image>
+        <text class="batch-nickname">{{item.nickName}}</text>
+        <input type="digit" class="batch-amount-input" placeholder="金额" value="{{item.amount}}" data-index="{{index}}" bindinput="onBatchAmountInput" />
+      </view>
+    </view>
+    <view class="modal-buttons">
+      <button class="cancel-btn" bindtap="cancelBatchTransfer">取消</button>
+      <button class="confirm-btn" bindtap="confirmBatchTransfer">确定</button>
+    </view>
+  </view>
+</view>
+
+<!-- 邀请弹窗 -->
+<view class="modal" wx:if="{{showInviteModal}}">
+  <view class="modal-content">
+    <view class="modal-title">邀请好友加入房间</view>
+    <view class="invite-btns">
+      <button class="confirm-btn" open-type="share">微信分享</button>
+      <button class="confirm-btn" bindtap="generateRoomQRCode">生成二维码</button>
+    </view>
+    <view class="invite-qrcode" wx:if="{{roomQRCode}}">
+      <image src="{{roomQRCode}}" style="width: 200rpx; height: 200rpx;" mode="aspectFit"/>
+    </view>
+    <button class="cancel-btn" style="margin-top: 32rpx;" bindtap="closeInviteModal">关闭</button>
+  </view>
+</view>
+
+<!-- 说明弹窗 -->
+<view class="modal" wx:if="{{showHelpModal}}">
+  <view class="modal-content">
+    <view class="modal-title">房间操作说明</view>
+    <view class="help-content">
+      <text>1. 点击玩家头像可向该玩家转账。</text>
+      <text>2. "支出"可批量向多名玩家转账。</text>
+      <text>3. "邀请"可通过微信或二维码邀请好友加入房间。</text>
+      <text>4. "结算"用于结束本局并保存记录。</text>
+      <text>5. 聊天区展示所有操作和系统消息。</text>
+    </view>
+    <button class="cancel-btn" style="margin-top: 32rpx;" bindtap="closeHelpModal">关闭</button>
   </view>
 </view> 

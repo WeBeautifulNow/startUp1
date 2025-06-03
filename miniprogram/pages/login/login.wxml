@@ -1,0 +1,21 @@
+<!--login.wxml-->
+<view class="container">
+  <view class="login-box">
+    <view class="title">欢迎使用打牌记账本</view>
+    <view class="subtitle">请授权登录以使用完整功能</view>
+    
+    <view class="avatar-wrapper">
+      <button class="avatar-btn" open-type="chooseAvatar" bind:chooseavatar="onChooseAvatar">
+        <image class="avatar" src="{{avatarUrl || defaultAvatarUrl}}" mode="aspectFill"></image>
+      </button>
+    </view>
+
+    <view class="nickname-wrapper">
+      <input type="nickname" class="nickname-input" placeholder="请输入昵称" bind:change="onInputNickname" value="{{nickName}}"/>
+    </view>
+
+    <button class="login-btn" bindtap="handleLogin" disabled="{{!avatarUrl || !nickName}}">
+      登录
+    </button>
+  </view>
+</view> 

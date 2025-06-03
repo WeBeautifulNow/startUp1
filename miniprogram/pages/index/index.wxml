@@ -3,7 +3,7 @@
   <!-- 用户信息区域 -->
   <view class="user-info">
     <view class="avatar-container">
-      <image class="avatar" src="{{userInfo.avatarUrl || '/images/default-avatar.png'}}" mode="aspectFill"></image>
+      <image class="avatar" src="{{userInfo.avatarUrl || defaultAvatarUrl}}" mode="aspectFill"></image>
     </view>
     <view class="user-stats">
       <text class="nickname">{{userInfo.nickName || '未登录'}}</text>
@@ -31,8 +31,12 @@
 
   <!-- 主要功能按钮 -->
   <view class="action-buttons">
-    <button class="action-btn create" bindtap="createRoom">创建房间</button>
-    <button class="action-btn join" bindtap="joinRoom">加入房间</button>
+    <button class="action-btn create" bindtap="createRoom">
+      <text>创建房间</text>
+    </button>
+    <button class="action-btn join" bindtap="joinRoom">
+      <text>加入房间</text>
+    </button>
   </view>
 
   <!-- 设置按钮 -->

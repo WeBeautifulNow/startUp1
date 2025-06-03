@@ -14,12 +14,13 @@
     "coverView": false,
     "postcss": false,
     "minified": false,
-    "enhance": false,
+    "enhance": true,
     "showShadowRootInWxmlPanel": false,
     "packNpmRelationList": [],
     "ignoreUploadUnusedFiles": true,
     "compileHotReLoad": false,
-    "useTypeScript": true
+    "useTypeScript": true,
+    "es6": true
   },
   "simulatorType": "wechat",
   "simulatorPluginLibVersion": {},

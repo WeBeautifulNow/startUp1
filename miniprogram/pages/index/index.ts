@@ -1,7 +1,6 @@
 // index.ts
 // 获取应用实例
-const app = getApp()
-const defaultAvatarUrl = 'https://mmbiz.qpic.cn/mmbiz/icTdbqWNOwNRna42FI242Lcia07jQodd2FJGIYQfG0LAJGFxM4FbnQP6yfMxBgJ0F3YRqJCJ1aPAK2dQagdusBZg/0'
+import { DEFAULT_AVATAR_URL } from '../../config/constants'
 
 interface IUserInfo {
   avatarUrl: string;
@@ -26,10 +25,35 @@ Page({
     hasUserInfo: false,
     canIUseGetUserProfile: wx.canIUse('getUserProfile'),
     canIUseNicknameComp: wx.canIUse('input.type.nickname'),
+    defaultAvatarUrl: DEFAULT_AVATAR_URL
   },
 
   onLoad() {
-    this.getUserInfo()
+    this.checkLoginStatus()
+  },
+
+  onShow() {
+    // 每次页面显示时检查登录状态
+    this.checkLoginStatus()
+  },
+
+  checkLoginStatus() {
+    const userInfo = wx.getStorageSync('userInfo')
+    if (!userInfo) {
+      // 未登录，跳转到登录页面
+      wx.redirectTo({
+        url: '/pages/login/login'
+      })
+      return
+    }
+    
+    // 已登录，设置用户信息
+    this.setData({
+      userInfo,
+      hasUserInfo: true
+    })
+    
+    // 获取用户统计数据
     this.getUserStats()
   },
 
@@ -45,8 +69,10 @@ Page({
     const { nickName } = this.data.userInfo
     this.setData({
       "userInfo.avatarUrl": avatarUrl,
-      hasUserInfo: nickName && avatarUrl && avatarUrl !== defaultAvatarUrl,
+      hasUserInfo: nickName && avatarUrl && avatarUrl !== DEFAULT_AVATAR_URL,
     })
+    // 保存更新后的用户信息
+    wx.setStorageSync('userInfo', this.data.userInfo)
   },
 
   onInputChange(e: any) {
@@ -54,32 +80,10 @@ Page({
     const { avatarUrl } = this.data.userInfo
     this.setData({
       "userInfo.nickName": nickName,
-      hasUserInfo: nickName && avatarUrl && avatarUrl !== defaultAvatarUrl,
+      hasUserInfo: nickName && avatarUrl && avatarUrl !== DEFAULT_AVATAR_URL,
     })
-  },
-
-  getUserInfo() {
-    if (wx.getUserProfile) {
-      wx.getUserProfile({
-        desc: '用于完善用户资料',
-        success: (res) => {
-          this.setData({
-            userInfo: res.userInfo,
-            hasUserInfo: true
-          })
-          // 保存用户信息到本地存储
-          wx.setStorageSync('userInfo', res.userInfo)
-        },
-        fail: (err) => {
-          console.error('获取用户信息失败', err)
-          // 尝试从本地存储获取用户信息
-          const userInfo = wx.getStorageSync('userInfo')
-          if (userInfo) {
-            this.setData({ userInfo })
-          }
-        }
-      })
-    }
+    // 保存更新后的用户信息
+    wx.setStorageSync('userInfo', this.data.userInfo)
   },
 
   getUserStats() {
@@ -100,10 +104,39 @@ Page({
 
   createRoom() {
     // 生成随机房间ID
-    const roomId = Math.random().toString(36).substr(2, 6).toUpperCase()
+    const generateRoomId = () => {
+      // 使用时间戳+随机数的方式生成更唯一的房间号
+      const timestamp = Date.now().toString(36);
+      const random = Math.random().toString(36).substr(2, 4);
+      return (timestamp + random).toUpperCase();
+    };
+
+    // 获取已存在的房间列表
+    const existingRooms = wx.getStorageSync('activeRooms') || [];
+    
+    // 生成新的房间号并确保唯一性
+    let roomId;
+    do {
+      roomId = generateRoomId();
+    } while (existingRooms.includes(roomId));
+
+    // 保存新房间信息
+    const newRoom = {
+      roomId,
+      creator: wx.getStorageSync('userInfo'),
+      createTime: Date.now(),
+      players: [wx.getStorageSync('userInfo')],
+      transactions: []
+    };
+    
+    existingRooms.push(roomId);
+    wx.setStorageSync('activeRooms', existingRooms);
+    wx.setStorageSync(`room_${roomId}`, newRoom);
+
+    // 跳转到房间页面
     wx.navigateTo({
       url: `/pages/room/room?roomId=${roomId}&isCreator=true`
-    })
+    });
   },
 
   joinRoom() {
@@ -113,12 +146,40 @@ Page({
       placeholderText: '请输入房间ID',
       success: (res) => {
         if (res.confirm && res.content) {
+          const roomId = res.content.toUpperCase();
+          const roomData = wx.getStorageSync(`room_${roomId}`);
+          
+          if (!roomData) {
+            wx.showToast({
+              title: '房间不存在',
+              icon: 'none'
+            });
+            return;
+          }
+
+          // 检查用户是否已在房间中
+          const userInfo = wx.getStorageSync('userInfo');
+          const isInRoom = roomData.players.some(player => player.openId === userInfo.openId);
+          
+          if (isInRoom) {
+            wx.showToast({
+              title: '您已在房间中',
+              icon: 'none'
+            });
+            return;
+          }
+
+          // 更新房间信息
+          roomData.players.push(userInfo);
+          wx.setStorageSync(`room_${roomId}`, roomData);
+
+          // 跳转到房间页面
           wx.navigateTo({
-            url: `/pages/room/room?roomId=${res.content}&isCreator=false`
-          })
+            url: `/pages/room/room?roomId=${roomId}&isCreator=false`
+          });
         }
       }
-    })
+    });
   },
 
   goToSettings() {
