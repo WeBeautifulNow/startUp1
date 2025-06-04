@@ -137,6 +137,7 @@
   background-color: #fff;
   border-radius: 10rpx;
   justify-content: center;
+  margin-bottom: 60rpx;
 }
 
 .action-btn {

@@ -161,19 +161,13 @@ Page({
           const userInfo = wx.getStorageSync('userInfo');
           const isInRoom = roomData.players.some(player => player.openId === userInfo.openId);
           
-          if (isInRoom) {
-            wx.showToast({
-              title: '您已在房间中',
-              icon: 'none'
-            });
-            return;
+          if (!isInRoom) {
+            // 更新房间信息
+            roomData.players.push(userInfo);
+            wx.setStorageSync(`room_${roomId}`, roomData);
           }
 
-          // 更新房间信息
-          roomData.players.push(userInfo);
-          wx.setStorageSync(`room_${roomId}`, roomData);
-
-          // 跳转到房间页面
+          // 无论是否已在房间，均跳转
           wx.navigateTo({
             url: `/pages/room/room?roomId=${roomId}&isCreator=false`
           });

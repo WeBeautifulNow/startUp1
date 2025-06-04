@@ -283,7 +283,7 @@ Page({
 
     wx.showModal({
       title: '确认结算',
-      content: '确定要结算当前房间吗？',
+      content: '确定要结算并关闭当前房间吗？',
       success: (res) => {
         if (res.confirm) {
           // 保存结算记录
@@ -299,11 +299,16 @@ Page({
           history.unshift(settlement);
           wx.setStorageSync('roomHistory', history);
 
-          // 更新用户统计
-          this.updateUserStats();
+          // 从 activeRooms 移除
+          let activeRooms = wx.getStorageSync('activeRooms') || [];
+          activeRooms = activeRooms.filter((id: string) => id !== this.data.roomId);
+          wx.setStorageSync('activeRooms', activeRooms);
 
-          // 返回主页
-          wx.navigateBack();
+          // 删除房间数据
+          wx.removeStorageSync(`room_${this.data.roomId}`);
+
+          // 跳转到首页
+          wx.reLaunch({ url: '/pages/index/index' });
         }
       }
     });
